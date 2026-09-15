@@ -851,11 +851,10 @@ const Dashboard = () => {
       </div>
 
       {/* ==================================================
-          NEW DASHBOARD ORDER BELOW THE FOUR SUMMARY CARDS:
+          DASHBOARD ORDER BELOW THE FOUR SUMMARY CARDS:
           1. Today's Meals
           2. Daily Water Intake
           3. Weight Progress / Weight Input
-          4. AI Health Assistant
           ================================================== */}
 
       {/* 1 & 2. TODAY'S MEALS (LEFT) AND DAILY WATER INTAKE (RIGHT) SIDE BY SIDE */}
@@ -866,9 +865,6 @@ const Dashboard = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center space-x-3">
                 <h3 className="font-sora font-bold text-navy-900 text-lg">Today's Meals</h3>
-                <span className="font-mono text-xs font-bold px-2.5 py-0.5 bg-green-100 text-green-700 rounded-full">
-                  {recentMeals.length} LOGGED
-                </span>
               </div>
 
               <div className="flex items-center space-x-2">
@@ -879,15 +875,6 @@ const Dashboard = () => {
                 >
                   <Settings className="w-3.5 h-3.5 text-amber-600" />
                   <span>Set Limit ({calorieGoal} kcal)</span>
-                </button>
-
-                <button
-                  onClick={() => handleOpenAddMeal('ai')}
-                  className="flex items-center space-x-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl shadow-xs transition-colors"
-                  title="Scan Food with AI"
-                >
-                  <Camera className="w-3.5 h-3.5" />
-                  <span>Scan Food</span>
                 </button>
 
                 <button
@@ -1204,38 +1191,7 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* 4. AI HEALTH ASSISTANT GUIDANCE CARD */}
-      <section
-        id="ai-assistant-section"
-        className="bg-navy-900 text-white rounded-[16px] p-6 shadow-md border border-line-dark relative overflow-hidden space-y-4"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-xl bg-green-400/20 flex items-center justify-center text-green-400">
-              <Bot className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="font-sora font-bold text-white text-base">AI Health Assistant</h3>
-              <p className="text-xs text-[#9AA6AC]">Personalized guidance based on your nutrition, weight, and hydration.</p>
-            </div>
-          </div>
-          <span className="ai-pulse w-2.5 h-2.5 rounded-full bg-green-400" />
-        </div>
 
-        <p className="text-xs sm:text-sm text-[#E7EBEA] leading-relaxed bg-navy-800/60 p-4 rounded-xl border border-line-dark/50">
-          "{aiGuidanceText}"
-        </p>
-
-        <div>
-          <button
-            onClick={() => window.dispatchEvent(new Event('open-ai-chat'))}
-            className="px-4 py-2.5 bg-green-700 hover:bg-green-600 text-white font-sora font-semibold text-xs rounded-xl inline-flex items-center space-x-2 transition-colors shadow-xs"
-          >
-            <span>Open AI Chat Assistant</span>
-            <Sparkles className="w-3.5 h-3.5 text-green-300" />
-          </button>
-        </div>
-      </section>
 
       {/* ==================================================
           MODALS FOR FUNCTIONAL LOGGING & TOOLS

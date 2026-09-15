@@ -85,7 +85,7 @@ const Login = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@fittrack.com or demo@fittrack.com"
+                placeholder="you@example.com"
                 className="w-full pl-11 pr-4 py-3 rounded-xl border border-line focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent text-sm bg-[#FAFAF8] text-navy-900"
               />
             </div>
@@ -135,20 +135,7 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Demo Account Hint */}
-        <div className="bg-green-050 p-4 rounded-[14px] border border-green-100 text-xs text-slate-600 space-y-2">
-          <p className="font-semibold text-navy-900">💡 Quick Login Credentials:</p>
-          <div className="space-y-1">
-            <p className="flex items-center justify-between">
-              <span>👑 <strong className="text-navy-900">Admin:</strong> <span className="font-mono text-green-800">admin@fittrack.com</span></span>
-              <span className="font-mono font-bold text-green-700 bg-white px-2 py-0.5 rounded border border-green-200">Admin123</span>
-            </p>
-            <p className="flex items-center justify-between">
-              <span>👤 <strong className="text-navy-900">User:</strong> <span className="font-mono text-green-800">demo@fittrack.com</span></span>
-              <span className="font-mono font-bold text-green-700 bg-white px-2 py-0.5 rounded border border-green-200">Demo123</span>
-            </p>
-          </div>
-        </div>
+
 
 
         {/* Footer Link */}
