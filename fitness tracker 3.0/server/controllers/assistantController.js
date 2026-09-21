@@ -134,7 +134,7 @@ const chatWithAssistant = async (req, res) => {
 
     const todayCalories = todayMeals.reduce((sum, m) => sum + m.calories, 0);
     const todayWater = todayWaterLogs.reduce((sum, w) => sum + w.amount, 0);
-    const waterGoal = 2500; // in ml
+    const waterGoal = profile?.waterGoal || 2500; // in ml
     const remainingWater = Math.max(0, waterGoal - todayWater);
 
     const recentMealsSummary = todayMeals.map(m => `- ${m.mealType}: ${m.foodName} (${m.calories} kcal)`).join('\n') || 'None recorded today';
