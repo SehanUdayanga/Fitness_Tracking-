@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import {
   Bot,
@@ -8,12 +7,10 @@ import {
   Sparkles,
   MessageSquare,
   Minus,
-  Maximize2,
-  Utensils
+  Maximize2
 } from 'lucide-react';
 
 const AIChatWidget = () => {
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -170,21 +167,6 @@ const AIChatWidget = () => {
 
           {/* Quick Prompts */}
           <div className="px-3 py-2 bg-navy-900/90 border-t border-line-dark/50 flex flex-wrap gap-1.5 flex-shrink-0">
-            <button
-              type="button"
-              onClick={() => {
-                setIsOpen(false);
-                navigate('/dashboard');
-                setTimeout(() => {
-                  const el = document.getElementById('meals-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-              }}
-              className="text-[10px] bg-green-900/60 hover:bg-green-800 text-green-300 hover:text-white px-2.5 py-1 rounded-md border border-green-700/60 transition-colors flex items-center space-x-1 font-semibold"
-            >
-              <Utensils className="w-3 h-3" />
-              <span>Track Meals in Dashboard</span>
-            </button>
             {[
               'How am I doing today?',
               'How is my weight progressing?',

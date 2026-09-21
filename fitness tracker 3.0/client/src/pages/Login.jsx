@@ -25,12 +25,8 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const res = await login(email, password);
-      if (res?.data?.role?.toLowerCase() === 'admin') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      await login(email, password);
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -85,7 +81,7 @@ const Login = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder="demo@fittrack.com"
                 className="w-full pl-11 pr-4 py-3 rounded-xl border border-line focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent text-sm bg-[#FAFAF8] text-navy-900"
               />
             </div>
@@ -135,8 +131,12 @@ const Login = () => {
           </button>
         </form>
 
-
-
+        {/* Demo Account Hint */}
+        <div className="bg-green-050 p-4 rounded-[14px] border border-green-100 text-xs text-slate-600 space-y-1">
+          <p className="font-semibold text-navy-900">💡 Demo Account Credentials:</p>
+          <p>Email: <span className="font-mono font-bold text-green-700">demo@fittrack.com</span></p>
+          <p>Password: <span className="font-mono font-bold text-green-700">Demo123</span></p>
+        </div>
 
         {/* Footer Link */}
         <div className="text-center text-sm text-slate-500 pt-2 border-t border-line">

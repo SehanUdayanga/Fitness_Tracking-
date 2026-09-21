@@ -2,29 +2,25 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
-// Layouts
+// Layout
 import MainLayout from './layouts/MainLayout';
-import AdminLayout from './layouts/AdminLayout';
 
-// User Pages
+// Pages
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ProfileSetup from './pages/ProfileSetup';
 import Dashboard from './pages/Dashboard';
+import MealTracker from './pages/MealTracker';
 import WaterIntake from './pages/WaterIntake';
 import WeightTracker from './pages/WeightTracker';
 import BMICalculator from './pages/BMICalculator';
 import Progress from './pages/Progress';
 import Profile from './pages/Profile';
 import FitTrackAI from './pages/FitTrackAI';
+import AdminDashboard from './pages/AdminDashboard';
 
-// Admin Pages
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminAIMonitoring from './pages/admin/AdminAIMonitoring';
-import AdminProfile from './pages/admin/AdminProfile';
-
-// Protected Route Guard for Normal Users
+// Protected Route Guard
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
@@ -46,7 +42,7 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-// Admin Route Guard (Requires JWT + role === 'ADMIN')
+// Admin Route Guard (Restricted to authenticated admin users)
 const AdminRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
@@ -65,23 +61,20 @@ const AdminRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (user.role?.toLowerCase() !== 'admin') {
+  if (user.role !== 'admin') {
     return <Navigate to="/dashboard" replace />;
   }
 
   return children;
 };
 
-// Public Route Guard for Auth Pages
+// Public Route Guard for Auth Pages (Redirects to dashboard if already logged in)
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) return null;
 
   if (user) {
-    if (user.role?.toLowerCase() === 'admin') {
-      return <Navigate to="/admin/dashboard" replace />;
-    }
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -130,7 +123,7 @@ function AppRoutes() {
         }
       />
 
-      {/* Main Authenticated Application Routes (User App) */}
+      {/* Main Authenticated Application Routes */}
       <Route
         element={
           <ProtectedRoute>
@@ -139,7 +132,7 @@ function AppRoutes() {
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/meals" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/meals" element={<MealTracker />} />
         <Route path="/water" element={<WaterIntake />} />
         <Route path="/weight" element={<WeightTracker />} />
         <Route path="/bmi" element={<BMICalculator />} />
@@ -147,21 +140,14 @@ function AppRoutes() {
         <Route path="/progression" element={<Progress />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/ai-assistant" element={<FitTrackAI />} />
-      </Route>
-
-      {/* Admin Panel Routes */}
-      <Route
-        path="/admin"
-        element={
-          <AdminRoute>
-            <AdminLayout />
-          </AdminRoute>
-        }
-      >
-        <Route index element={<Navigate to="/admin/dashboard" replace />} />
-        <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="ai" element={<AdminAIMonitoring />} />
-        <Route path="profile" element={<AdminProfile />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
       </Route>
 
       {/* Fallback 404 Route */}
@@ -179,3 +165,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+
