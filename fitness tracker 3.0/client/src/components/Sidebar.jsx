@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard,
   TrendingUp,
+  Utensils,
   Droplets,
   Scale,
   Calculator,
@@ -11,7 +12,8 @@ import {
   User,
   LogOut,
   Activity,
-  X
+  X,
+  ShieldCheck
 } from 'lucide-react';
 
 const Sidebar = ({ mobileOpen, setMobileOpen }) => {
@@ -21,11 +23,15 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Progress', path: '/progress', icon: TrendingUp },
+    { name: 'Nutrition', path: '/meals', icon: Utensils },
     { name: 'Water', path: '/water', icon: Droplets },
     { name: 'Health & BMI', path: '/bmi', icon: Calculator },
     { name: 'Weight History', path: '/weight', icon: Scale },
     { name: 'AI Assistant', path: '/ai-assistant', icon: Bot, badge: 'AI' },
     { name: 'Profile', path: '/profile', icon: User },
+    ...(user?.role === 'admin'
+      ? [{ name: 'Admin Panel', path: '/admin', icon: ShieldCheck, badge: 'ADMIN' }]
+      : [])
   ];
 
   const handleLogout = () => {

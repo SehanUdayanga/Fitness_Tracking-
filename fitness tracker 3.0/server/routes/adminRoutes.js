@@ -1,43 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const { protect, adminOnly } = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
+const { adminProtect } = require('../middleware/adminMiddleware');
 const {
-  getDashboardStatistics,
-  getUsers,
-  getUserById,
-  updateUser,
-  toggleUserStatus,
-  deleteUser,
-  getAIStatus,
-  getAIConfig,
-  updateAIConfig,
-  testAIConnection,
-  updateAdminProfile,
-  changeAdminPassword
+  getAdminStats,
+  getAdminUsers,
+  getUserActivity,
+  resetUserPassword,
+  deleteUser
 } = require('../controllers/adminController');
 
-// All admin routes require both JWT authentication and ADMIN role authorization
+// All admin routes require valid JWT authentication and admin role
 router.use(protect);
-router.use(adminOnly);
+router.use(adminProtect);
 
-// Statistics
-router.get('/statistics', getDashboardStatistics);
+// Aggregated Platform Statistics
+router.get('/stats', getAdminStats);
 
-// User Management
-router.get('/users', getUsers);
-router.get('/users/:id', getUserById);
-router.put('/users/:id', updateUser);
-router.patch('/users/:id/status', toggleUserStatus);
+// Users Management
+router.get('/users', getAdminUsers);
+router.get('/users/:id/activity', getUserActivity);
+router.post('/users/:id/reset-password', resetUserPassword);
 router.delete('/users/:id', deleteUser);
-
-// AI Monitoring & Configuration
-router.get('/ai/status', getAIStatus);
-router.get('/ai/config', getAIConfig);
-router.put('/ai/config', updateAIConfig);
-router.post('/ai/test', testAIConnection);
-
-// Admin Profile & Settings
-router.put('/profile', updateAdminProfile);
-router.put('/change-password', changeAdminPassword);
 
 module.exports = router;

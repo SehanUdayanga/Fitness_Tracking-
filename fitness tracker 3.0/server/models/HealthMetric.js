@@ -1,15 +1,23 @@
 const mongoose = require('mongoose');
 
-const weightRecordSchema = new mongoose.Schema({
+const healthMetricSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
   weight: {
-    type: Number, // in kg
-    required: true,
-    min: 0
+    type: Number,
+    required: true
+  },
+  bmi: {
+    type: Number,
+    required: true
+  },
+  bmiCategory: {
+    type: String,
+    enum: ['Underweight', 'Normal', 'Overweight', 'Obese'],
+    required: true
   },
   date: {
     type: String, // YYYY-MM-DD
@@ -22,4 +30,4 @@ const weightRecordSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('WeightRecord', weightRecordSchema);
+module.exports = mongoose.model('HealthMetric', healthMetricSchema);

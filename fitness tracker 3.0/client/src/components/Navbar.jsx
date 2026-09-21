@@ -5,7 +5,8 @@ import {
   User,
   Activity,
   LogOut,
-  ChevronDown
+  ChevronDown,
+  ShieldCheck
 } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 
@@ -24,6 +25,8 @@ const Navbar = () => {
 
   const [activeSection, setActiveSection] = useState('dashboard-overview');
   const isProgressPage = location.pathname === '/progress' || location.pathname === '/progression';
+  const isAdminPage = location.pathname === '/admin';
+  const isAdmin = user?.role === 'admin';
 
   const navLinks = [
     { name: 'Dashboard', sectionId: 'dashboard-overview', path: '/dashboard', isPage: false },
@@ -72,12 +75,12 @@ const Navbar = () => {
           </div>
         </NavLink>
 
-        {/* Center: Top Navigation Links [ Dashboard ] [ Meals ] [ Water ] [ Weight ] [ AI Assistant ] [ Progression ] */}
+        {/* Center: Top Navigation Links */}
         <nav className="flex items-center space-x-1 bg-white/90 p-1 rounded-xl border border-line shadow-xs font-inter text-xs overflow-x-auto">
           {navLinks.map((link) => {
             const isActive = link.isPage
               ? isProgressPage
-              : !isProgressPage && activeSection === link.sectionId;
+              : !isProgressPage && !isAdminPage && activeSection === link.sectionId;
 
             return (
               <button
@@ -94,6 +97,22 @@ const Navbar = () => {
               </button>
             );
           })}
+
+          {/* Conditional Admin Panel Nav Button */}
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => navigate('/admin')}
+              className={`px-3 py-1.5 rounded-lg transition-all whitespace-nowrap font-medium flex items-center gap-1.5 ${
+                isAdminPage
+                  ? 'bg-green-700 text-white shadow-xs font-semibold'
+                  : 'text-green-800 bg-green-100/70 hover:bg-green-100 font-semibold'
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-green-700" />
+              <span>Admin Panel</span>
+            </button>
+          )}
         </nav>
 
         {/* Right: Date Badge, User Info & Logout Button */}
@@ -132,9 +151,29 @@ const Navbar = () => {
                 onMouseLeave={() => setDropdownOpen(false)}
               >
                 <div className="px-3.5 py-2 border-b border-line">
-                  <p className="text-xs font-bold text-navy-900 truncate">{user?.name || 'User'}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-navy-900 truncate">{user?.name || 'User'}</p>
+                    {isAdmin && (
+                      <span className="font-mono text-[9px] font-bold bg-green-100 text-green-800 px-1.5 py-0.2 rounded border border-green-200">
+                        ADMIN
+                      </span>
+                    )}
+                  </div>
                   <p className="text-[10px] text-slate-500 truncate font-mono">{user?.email}</p>
                 </div>
+
+                {isAdmin && (
+                  <button
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      navigate('/admin');
+                    }}
+                    className="w-full text-left px-3.5 py-2 text-xs text-green-800 hover:bg-green-50 font-semibold flex items-center space-x-2 border-b border-line"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5 text-green-700" />
+                    <span>Admin Panel</span>
+                  </button>
+                )}
 
                 <button
                   onClick={() => {

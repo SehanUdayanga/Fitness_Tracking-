@@ -1,18 +1,18 @@
 const WeightRecord = require('../models/WeightRecord');
-const User = require('../models/User');
+const Profile = require('../models/Profile');
+const HealthMetric = require('../models/HealthMetric');
 
-// @desc    Get all weight records for user with dynamic summary
+// @desc    Get all weight records for user
 // @route   GET /api/weight
 // @access  Private
 const getWeightRecords = async (req, res) => {
   try {
-    const userId = req.user.id || req.user._id;
-    const records = await WeightRecord.find({ userId }).sort({ date: 1 });
-    const user = await User.findById(userId).select('targetWeight');
+    const records = await WeightRecord.find({ userId: req.user.id }).sort({ date: 1 });
+    const profile = await Profile.findOne({ userId: req.user.id });
 
-    const targetWeight = user ? (user.targetWeight || 65) : 65;
-    const startingWeight = records.length > 0 ? records[0].weight : targetWeight;
-    const currentWeight = records.length > 0 ? records[records.length - 1].weight : targetWeight;
+    const startingWeight = records.length > 0 ? records[0].weight : (profile ? profile.currentWeight : 0);
+    const currentWeight = records.length > 0 ? records[records.length - 1].weight : (profile ? profile.currentWeight : 0);
+    const targetWeight = profile ? (profile.targetWeight || 65) : 65;
     const weightChange = parseFloat((currentWeight - startingWeight).toFixed(1));
 
     res.json({
@@ -40,7 +40,6 @@ const getWeightRecords = async (req, res) => {
 // @access  Private
 const addWeightRecord = async (req, res) => {
   try {
-    const userId = req.user.id || req.user._id;
     const { weight, date } = req.body;
 
     if (!weight || Number(weight) <= 0) {
@@ -54,7 +53,7 @@ const addWeightRecord = async (req, res) => {
 
     // Find existing record for this date or create new
     let weightRecord = await WeightRecord.findOne({
-      userId,
+      userId: req.user.id,
       date: recordDate
     });
 
@@ -63,10 +62,46 @@ const addWeightRecord = async (req, res) => {
       await weightRecord.save();
     } else {
       weightRecord = await WeightRecord.create({
-        userId,
+        userId: req.user.id,
         weight: Number(weight),
         date: recordDate
       });
+    }
+
+    // Also update current weight on Profile
+    const profile = await Profile.findOneAndUpdate(
+      { userId: req.user.id },
+      { currentWeight: Number(weight), updatedAt: Date.now() },
+      { new: true }
+    );
+
+    // If height exists on profile, log/update a health metric
+    if (profile && profile.height) {
+      const heightMeters = profile.height / 100;
+      const bmi = parseFloat((Number(weight) / (heightMeters * heightMeters)).toFixed(1));
+<<<<<<< Updated upstream
+      let bmiCategory = 'Normal';
+      if (bmi < 18.5) bmiCategory = 'Underweight';
+      else if (bmi >= 18.5 && bmi <= 24.9) bmiCategory = 'Normal';
+=======
+      let bmiCategory = 'Healthy';
+      if (bmi < 18.5) bmiCategory = 'Underweight';
+      else if (bmi >= 18.5 && bmi <= 24.9) bmiCategory = 'Healthy';
+>>>>>>> Stashed changes
+      else if (bmi >= 25 && bmi <= 29.9) bmiCategory = 'Overweight';
+      else if (bmi >= 30) bmiCategory = 'Obese';
+
+      await HealthMetric.findOneAndUpdate(
+        { userId: req.user.id, date: recordDate },
+        {
+          userId: req.user.id,
+          weight: Number(weight),
+          bmi,
+          bmiCategory,
+          date: recordDate
+        },
+        { upsert: true, new: true }
+      );
     }
 
     res.status(201).json({
@@ -88,8 +123,7 @@ const addWeightRecord = async (req, res) => {
 // @access  Private
 const updateWeightRecord = async (req, res) => {
   try {
-    const userId = req.user.id || req.user._id;
-    const record = await WeightRecord.findOne({ _id: req.params.id, userId });
+    const record = await WeightRecord.findOne({ _id: req.params.id, userId: req.user.id });
 
     if (!record) {
       return res.status(404).json({
@@ -124,8 +158,7 @@ const updateWeightRecord = async (req, res) => {
 // @access  Private
 const deleteWeightRecord = async (req, res) => {
   try {
-    const userId = req.user.id || req.user._id;
-    const record = await WeightRecord.findOneAndDelete({ _id: req.params.id, userId });
+    const record = await WeightRecord.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
 
     if (!record) {
       return res.status(404).json({

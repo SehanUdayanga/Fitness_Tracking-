@@ -11,8 +11,7 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json({ limit: '15mb' }));
-app.use(express.urlencoded({ extended: true, limit: '15mb' }));
+app.use(express.json());
 
 // Basic health check route
 app.get('/api/health', (req, res) => {
@@ -22,7 +21,6 @@ app.get('/api/health', (req, res) => {
 // API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/profile', require('./routes/profileRoutes'));
-app.use('/api/foods', require('./routes/foodRoutes'));
 app.use('/api/meals', require('./routes/mealRoutes'));
 app.use('/api/water', require('./routes/waterRoutes'));
 app.use('/api/weight', require('./routes/weightRoutes'));
@@ -31,6 +29,7 @@ app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/progress', require('./routes/progressRoutes'));
 app.use('/api/assistant', require('./routes/assistantRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+
 
 // 404 Route handler
 app.use((req, res, next) => {

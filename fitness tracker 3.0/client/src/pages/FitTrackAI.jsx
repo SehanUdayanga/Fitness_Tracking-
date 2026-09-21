@@ -128,7 +128,7 @@ const FitTrackAI = () => {
             <h1 className="font-sora text-2xl font-bold text-navy-900 tracking-tight flex items-center gap-2.5">
               FitTrack AI Assistant
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700 font-mono">
-                <Sparkles className="w-3.5 h-3.5" /> Gemini Flash
+                <Sparkles className="w-3.5 h-3.5" /> Groq AI
               </span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 font-medium">Your personalized health assistant</p>
