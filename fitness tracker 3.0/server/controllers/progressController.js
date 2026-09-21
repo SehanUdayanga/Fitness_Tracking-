@@ -29,8 +29,8 @@ const getProgressData = async (req, res) => {
     // Fetch user profile for goals
     const profile = await Profile.findOne({ userId });
     const goalWeight = profile?.targetWeight || 65.0;
-    const goalWater = 2.5; // in Liters
-    const goalCalories = 2100; // in kcal
+    const goalWater = (profile?.waterGoal || 2500) / 1000;
+    const goalCalories = profile?.calorieGoal || 2100;
 
     // Fetch all user weight records to compute starting weight & historical weights
     const allWeightRecords = await WeightRecord.find({ userId }).sort({ date: 1 });
