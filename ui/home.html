@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitTrack 3.0 | Next-Generation Health Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --teal: #14b8a6;
+      --cyan: #06b6d4;
+      --amber: #f59e0b;
+      --ink: #f8fafc;
+      --muted: #94a3b8;
+      --line: #1e293b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Sora', sans-serif;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .mono { font-family: 'IBM Plex Mono', monospace; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Glow backdrop */
+    .glow-blob {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Navbar */
+    .nav {
+      height: 76px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 max(24px, calc((100% - 1200px)/2));
+      background: rgba(9, 13, 22, 0.85);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font: 800 18px 'Sora', sans-serif;
+      color: #fff;
+    }
+    .mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--emerald), var(--teal));
+      color: #042f2e;
+      font-weight: 900;
+      box-shadow: 0 4px 14px var(--emerald-glow);
+    }
+    .navlinks {
+      display: flex;
+      gap: 28px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .navlinks a:hover { color: var(--emerald); }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font: 600 13px 'Sora', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--emerald), var(--teal));
+      color: #042f2e;
+      box-shadow: 0 4px 20px var(--emerald-glow);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16,185,129,0.35);
+    }
+    .btn-outline {
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      border: 1px solid var(--card-border);
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 100px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      color: var(--emerald);
+      font: 600 11px 'IBM Plex Mono', monospace;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(38px, 4.5vw, 56px);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #34d399, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 30px;
+      max-width: 500px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* Preview Card */
+    .preview-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 40px rgba(16,185,129,0.1);
+      backdrop-filter: blur(20px);
+    }
+    .preview-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+    .dots { display: flex; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot:nth-child(1) { background: #ef4444; }
+    .dot:nth-child(2) { background: #f59e0b; }
+    .dot:nth-child(3) { background: #10b981; }
+    .preview-title {
+      font: 600 11px 'IBM Plex Mono', monospace;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* Mini Grid */
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .mini-card {
+      background: rgba(9, 13, 22, 0.6);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .mini-card.glow {
+      border-color: rgba(16,185,129,0.4);
+      background: rgba(16,185,129,0.06);
+    }
+    .label {
+      font: 600 10px 'IBM Plex Mono', monospace;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .val {
+      font: 700 24px 'IBM Plex Mono', monospace;
+      color: #fff;
+      margin: 6px 0 2px;
+    }
+    .val.green { color: var(--emerald); }
+    .val.cyan { color: var(--cyan); }
+    .val.amber { color: var(--amber); }
+    .sub { font-size: 11px; color: var(--muted); }
+
+    /* Interactive Calculator Section */
+    .section {
+      padding: 90px 0;
+      border-top: 1px solid var(--line);
+    }
+    .section-title {
+      text-align: center;
+      max-width: 650px;
+      margin: 0 auto 50px;
+    }
+    .section-title h2 {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+    .section-title p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .calc-container {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 36px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+    .control-group {
+      margin-bottom: 24px;
+    }
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font: 600 12px 'IBM Plex Mono', monospace;
+      color: #cbd5e1;
+    }
+    .slider {
+      width: 100%;
+      height: 6px;
+      background: #1e293b;
+      border-radius: 4px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--emerald);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--emerald);
+    }
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-choice {
+      flex: 1;
+      padding: 10px;
+      background: rgba(9, 13, 22, 0.6);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--muted);
+      font: 600 11px 'IBM Plex Mono', monospace;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .btn-choice.active {
+      background: rgba(16,185,129,0.15);
+      border-color: var(--emerald);
+      color: var(--emerald);
+      font-weight: 700;
+    }
+
+    .calc-result {
+      background: rgba(9, 13, 22, 0.8);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .result-box {
+      background: rgba(16,185,129,0.08);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      margin: 16px 0;
+    }
+    .result-val {
+      font: 800 36px 'IBM Plex Mono', monospace;
+      color: var(--emerald);
+    }
+    .macros-split {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      text-align: center;
+      margin-top: 14px;
+    }
+    .macro-col {
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 10px;
+      padding: 10px 6px;
+    }
+    .macro-col strong {
+      display: block;
+      font: 700 16px 'IBM Plex Mono', monospace;
+      color: #fff;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .feat-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.3s;
+    }
+    .feat-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--emerald);
+      box-shadow: 0 10px 30px rgba(16,185,129,0.1);
+    }
+    .feat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(16,185,129,0.12);
+      color: var(--emerald);
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .feat-card h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .feat-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 40px; padding: 50px 0; }
+      .calc-container { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .navlinks { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-blob" style="top: -100px; left: 10%;"></div>
+  <div class="glow-blob" style="top: 40%; right: 5%; background: radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%);"></div>
+
+  <!-- Navbar -->
+  <nav class="nav">
+    <a class="brand" href="home.html">
+      <span class="mark">✦</span>
+      <span>FITTRACK <small style="font-family:'IBM Plex Mono';font-size:10px;color:var(--emerald);background:rgba(16,185,129,0.15);padding:2px 6px;border-radius:6px">3.0</small></span>
+    </a>
+    <div class="navlinks">
+      <a href="#home">Home</a>
+      <a href="#calculator">Calculator</a>
+      <a href="#features">Features</a>
+      <a href="http://localhost:3000" target="_blank">React SPA</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="dashboard.html">Sign In</a>
+      <a class="btn btn-primary" href="dashboard.html">⚡ Instant Demo</a>
+    </div>
+  </nav>
+
+  <main class="container" id="home">
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <div class="badge">● REAL-TIME TELEMETRY SYSTEM</div>
+        <h1>Your Health. Your Data. <span class="gradient-text">Your FitTrack.</span></h1>
+        <p>A unified wellness command center for real-time macronutrient tracking, fluid equilibrium, metabolic targets, and progressive analytics.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="dashboard.html">⚡ Launch Dashboard Demo</a>
+          <a class="btn btn-outline" href="#calculator">Try Health Calculator</a>
+        </div>
+      </div>
+
+      <!-- Preview Card -->
+      <div class="preview-card">
+        <div class="preview-top">
+          <div class="dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+          <span class="preview-title">FITTRACK / TELEMETRY OVERVIEW</span>
+          <span style="font-family:'IBM Plex Mono';font-size:10px;color:var(--emerald)">● LIVE</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-card glow">
+            <div class="label">BMI Score</div>
+            <div class="val green">22.4</div>
+            <div class="sub">Normal healthy range</div>
+          </div>
+          <div class="mini-card">
+            <div class="label">Body Weight</div>
+            <div class="val">68.2 <small style="font-size:14px;color:var(--muted)">kg</small></div>
+            <div class="sub">−1.3 kg last 30d</div>
+          </div>
+          <div class="mini-card">
+            <div class="label">Hydration Target</div>
+            <div class="val cyan">75%</div>
+            <div class="sub">1.8 / 2.4 L logged</div>
+          </div>
+          <div class="mini-card">
+            <div class="label">Daily Calories</div>
+            <div class="val amber">1,860</div>
+            <div class="sub">Target 2,100 kcal</div>
+          </div>
+        </div>
+        <div style="background:rgba(9,13,22,0.6);border:1px solid var(--line);border-radius:14px;padding:14px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span class="label">7-Day Consistency Velocity</span>
+            <span style="font-family:'IBM Plex Mono';font-size:10px;color:var(--emerald)">+14% this week</span>
+          </div>
+          <div style="height:45px;display:flex;align-items:flex-end;gap:8px">
+            <div style="flex:1;height:75%;background:var(--emerald);border-radius:4px"></div>
+            <div style="flex:1;height:100%;background:var(--emerald);border-radius:4px"></div>
+            <div style="flex:1;height:65%;background:var(--emerald);border-radius:4px"></div>
+            <div style="flex:1;height:90%;background:var(--emerald);border-radius:4px"></div>
+            <div style="flex:1;height:85%;background:var(--emerald);border-radius:4px"></div>
+            <div style="flex:1;height:100%;background:var(--cyan);border-radius:4px"></div>
+            <div style="flex:1;height:92%;background:var(--cyan);border-radius:4px"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Calculator -->
+    <section class="section" id="calculator">
+      <div class="section-title">
+        <div class="badge">🧮 INTERACTIVE TOOL</div>
+        <h2>Instant Metabolic &amp; Calorie Calculator</h2>
+        <p>Adjust your metrics to calculate your Basal Metabolic Rate (BMR) and recommended daily calorie intake in real time.</p>
+      </div>
+
+      <div class="calc-container">
+        <!-- Controls -->
+        <div>
+          <div class="control-group">
+            <div class="control-label">
+              <span>BODY WEIGHT</span>
+              <strong id="weightVal" style="color:var(--emerald)">70 kg</strong>
+            </div>
+            <input type="range" min="40" max="150" value="70" class="slider" id="weightSlider" oninput="calcMetrics()">
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <span>HEIGHT</span>
+              <strong id="heightVal" style="color:var(--cyan)">175 cm</strong>
+            </div>
+            <input type="range" min="130" max="215" value="175" class="slider" id="heightSlider" oninput="calcMetrics()">
+          </div>
+
+          <div class="control-group">
+            <div class="control-label"><span>ACTIVITY LEVEL</span></div>
+            <div class="btn-group">
+              <button class="btn-choice" onclick="setActivity(1.2, this)">Sedentary</button>
+              <button class="btn-choice active" onclick="setActivity(1.55, this)">Moderate</button>
+              <button class="btn-choice" onclick="setActivity(1.725, this)">Active</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label"><span>PRIMARY GOAL</span></div>
+            <div class="btn-group">
+              <button class="btn-choice" onclick="setGoal('lose', this)">Fat Loss</button>
+              <button class="btn-choice active" onclick="setGoal('maintain', this)">Maintain</button>
+              <button class="btn-choice" onclick="setGoal('gain', this)">Muscle Gain</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculated Output -->
+        <div class="calc-result">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span class="label">BMI SCORE</span>
+              <span id="bmiBadge" style="font-family:'IBM Plex Mono';font-size:11px;padding:3px 8px;border-radius:99px;background:rgba(16,185,129,0.15);color:var(--emerald)">Normal (22.9)</span>
+            </div>
+            <div class="result-box">
+              <div class="label" style="margin-bottom:4px">RECOMMENDED DAILY INTAKE</div>
+              <div class="result-val" id="targetCal">2,150 <small style="font-size:16px;color:#cbd5e1">kcal</small></div>
+            </div>
+            <div class="macros-split">
+              <div class="macro-col">
+                <span class="label" style="color:var(--emerald)">PROTEIN</span>
+                <strong id="macroP">140g</strong>
+              </div>
+              <div class="macro-col">
+                <span class="label" style="color:var(--cyan)">CARBS</span>
+                <strong id="macroC">240g</strong>
+              </div>
+              <div class="macro-col">
+                <span class="label" style="color:var(--amber)">FATS</span>
+                <strong id="macroF">65g</strong>
+              </div>
+            </div>
+          </div>
+          <a class="btn btn-primary" href="dashboard.html" style="justify-content:center;margin-top:20px">
+            Save &amp; Track in Dashboard ➔
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+      <div class="section-title">
+        <div class="badge">✦ PLATFORM CAPABILITIES</div>
+        <h2>Everything Built for Precision</h2>
+        <p>Stay in control with intelligent telemetry tools designed for consistent, measurable results.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feat-card">
+          <div class="feat-icon">⚡</div>
+          <h3>Workouts &amp; Activity</h3>
+          <p>Log exercise sessions, track caloric burn, and visualize your daily activity momentum.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🥗</div>
+          <h3>Nutrition &amp; Macros</h3>
+          <p>Breakdown daily meals into protein, carbohydrates, and healthy fats with instant calorie totals.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">💧</div>
+          <h3>Hydration Meter</h3>
+          <p>Maintain fluid balance with quick 1-click cup logging and percentage progress rings.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 FitTrack Systems. All rights reserved. Powered by HTML5, JavaScript &amp; Modern CSS.</p>
+    </div>
+  </footer>
+
+  <script>
+    let activity = 1.55;
+    let goal = 'maintain';
+
+    function setActivity(val, btn) {
+      activity = val;
+      btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      calcMetrics();
+    }
+
+    function setGoal(val, btn) {
+      goal = val;
+      btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      calcMetrics();
+    }
+
+    function calcMetrics() {
+      const w = Number(document.getElementById('weightSlider').value);
+      const h = Number(document.getElementById('heightSlider').value);
+      document.getElementById('weightVal').textContent = w + ' kg';
+      document.getElementById('heightVal').textContent = h + ' cm';
+
+      const bmi = (w / ((h/100)*(h/100))).toFixed(1);
+      let cat = 'Normal';
+      if (bmi < 18.5) cat = 'Underweight';
+      else if (bmi >= 25 && bmi < 30) cat = 'Overweight';
+      else if (bmi >= 30) cat = 'High';
+
+      document.getElementById('bmiBadge').textContent = `${cat} (${bmi})`;
+
+      const bmr = Math.round(10 * w + 6.25 * h - 5 * 28 + 5);
+      const tdee = Math.round(bmr * activity);
+      let target = tdee;
+      if (goal === 'lose') target -= 450;
+      if (goal === 'gain') target += 350;
+
+      document.getElementById('targetCal').innerHTML = `${target} <small style="font-size:16px;color:#cbd5e1">kcal</small>`;
+      document.getElementById('macroP').textContent = Math.round(w * 2.0) + 'g';
+      document.getElementById('macroF').textContent = Math.round((target * 0.25) / 9) + 'g';
+      document.getElementById('macroC').textContent = Math.round((target - (w * 2.0 * 4 + ((target * 0.25) / 9) * 9)) / 4) + 'g';
+    }
+
+    calcMetrics();
+  </script>
+</body>
+</html>
